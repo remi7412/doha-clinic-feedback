@@ -7,16 +7,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --teal:    #00756A;
+      --teal:   #00756A;
       --teal-d: #005A51;
       --teal-l: #E6F4F2;
-      --ink:     #1A2A28;
-      --mist:    #F5F8F7;
+      --ink:    #1A2A28;
+      --mist:   #F5F8F7;
       --border: #C8DAD7;
-      --red:     #C0392B;
+      --red:    #C0392B;
       --white:  #FFFFFF;
       --radius: 10px;
-      --ease:    cubic-bezier(.4,0,.2,1);
+      --ease:   cubic-bezier(.4,0,.2,1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,11 +54,8 @@
     /* ── Cover banner ── */
     .cover {
       position: relative;
-      height: 140px;
-      /* Uses cover.jpg background with fallback color gradient */
-      background: linear-gradient(135deg, rgba(0,90,81,0.4) 0%, rgba(0,117,106,0.2) 100%), url('cover.jpg');
-      background-size: cover;
-      background-position: center;
+      height: 130px;
+      background: linear-gradient(135deg, var(--teal-d) 0%, var(--teal) 60%, #52A89F 100%);
       overflow: hidden;
     }
     .cover::after {
@@ -73,7 +70,7 @@
       bottom: -36px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px; height: 80px;
+      width: 72px; height: 72px;
       background: var(--white);
       border-radius: 50%;
       border: 3px solid var(--teal-l);
@@ -81,13 +78,12 @@
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
       z-index: 10;
-      padding: 6px;
     }
-    .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+    .logo-wrap img { width:56px; height:56px; object-fit:contain; }
 
     /* ── Header text ── */
     .header-text {
-      padding: 56px 24px 20px;
+      padding: 52px 24px 20px;
       text-align: center;
     }
     .header-text h1 {
@@ -107,9 +103,9 @@
     .lang-btn {
       position: absolute;
       top: 12px; right: 12px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(255,255,255,.18);
       color: #fff;
-      border: 1px solid rgba(255,255,255,.25);
+      border: 1px solid rgba(255,255,255,.35);
       padding: 5px 13px;
       border-radius: 20px;
       font-size: .8rem;
@@ -119,8 +115,7 @@
       transition: background .2s var(--ease);
       z-index: 20;
     }
-    .lang-btn:hover { background: rgba(0, 0, 0, 0.6); }
-    [dir="rtl"] .lang-btn { right: auto; left: 12px; }
+    .lang-btn:hover { background: rgba(255,255,255,.30); }
 
     /* ── Form body ── */
     .form-body { padding: 0 28px 32px; }
@@ -249,51 +244,59 @@
 
   <div class="card">
 
+    <!-- Cover + logo -->
     <div class="cover">
       <button class="lang-btn" id="langBtn" onclick="toggleLang()">العربية</button>
       <div class="logo-wrap">
-        <img src="logo.jpg" alt="Doha Clinic Hospital" />
+        <img src="logo.jpg" alt="Doha Clinic Hospital" onerror="this.style.display='none'" />
       </div>
     </div>
 
+    <!-- Header -->
     <div class="header-text">
       <h1 id="ttTitle">Patient Feedback &amp; Suggestion Box</h1>
-      <p id="ttSub">We value your opinion to improve our healthcare services.</p>
+      <p  id="ttSub">We value your opinion to improve our healthcare services.</p>
     </div>
 
+    <!-- Form -->
     <div class="form-body">
       <form id="feedbackForm" novalidate onsubmit="handleSubmit(event)">
 
+        <!-- Name -->
         <div class="field">
-          <label id="lblName" for="patientName">Full Name <span style="color:#5C7A77;font-weight:400;">(Optional)</span></label>
-          <input type="text" id="patientName" autocomplete="name" />
+          <label id="lblName" for="patientName">Full Name <span class="req">*</span></label>
+          <input type="text" id="patientName" autocomplete="name" required />
         </div>
 
+        <!-- Email -->
         <div class="field">
-          <label id="lblEmail" for="patientEmail">Email Address <span style="color:#5C7A77;font-weight:400;">(Optional)</span></label>
-          <input type="email" id="patientEmail" autocomplete="email" />
+          <label id="lblEmail" for="patientEmail">Email Address <span class="req">*</span></label>
+          <input type="email" id="patientEmail" autocomplete="email" required />
         </div>
 
+        <!-- Phone -->
         <div class="field">
-          <label id="lblPhone" for="patientPhone">Phone Number <span style="color:#5C7A77;font-weight:400;">(Optional)</span></label>
-          <input type="tel" id="patientPhone" autocomplete="tel" />
+          <label id="lblPhone" for="patientPhone">Phone Number <span class="req">*</span></label>
+          <input type="tel" id="patientPhone" autocomplete="tel" required />
         </div>
 
         <hr class="divider" />
 
+        <!-- Feedback Type -->
         <div class="field">
           <label id="lblType" for="feedbackType">Type of Feedback <span class="req">*</span></label>
           <div class="select-wrap">
             <select id="feedbackType" required onchange="onTypeChange()">
               <option value="" disabled selected id="optTypeDefault">Select an option…</option>
-              <option value="Compliment / ثناء"                                         id="optCompliment">Compliment</option>
-              <option value="Comment / تعليق"                                           id="optComment">Comment</option>
+              <option value="Compliment / ثناء"                                          id="optCompliment">Compliment</option>
+              <option value="Comment / تعليق"                                            id="optComment">Comment</option>
               <option value="Complaint / شكوى"                                           id="optComplaint">Complaint</option>
               <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات" id="optLost">Inquire about a Lost Item (Security)</option>
             </select>
           </div>
         </div>
 
+        <!-- Department -->
         <div class="field">
           <label id="lblDept" for="department">Department / Clinic Visited <span class="req">*</span></label>
           <div class="select-wrap">
@@ -309,11 +312,13 @@
           </div>
         </div>
 
+        <!-- Feedback details -->
         <div class="field">
           <label id="lblDetails" for="feedbackDetails">Details / Comments <span class="req">*</span></label>
           <textarea id="feedbackDetails" required placeholder="Share your experience…"></textarea>
         </div>
 
+        <!-- Lost & Found (conditional) -->
         <div class="security-section" id="securitySection">
           <h3 id="secHeader">🔍 Lost &amp; Found Details</h3>
           <div class="field">
@@ -326,12 +331,14 @@
           </div>
         </div>
 
+        <!-- Submit -->
         <button type="submit" class="btn-submit" id="btnSubmit">Submit Feedback</button>
 
       </form>
     </div>
   </div>
 
+  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <script>
@@ -344,9 +351,9 @@
         langBtn:     'العربية',
         title:       'Patient Feedback &amp; Suggestion Box',
         sub:         'We value your opinion to improve our healthcare services.',
-        lblName:     'Full Name <span style="color:#5C7A77;font-weight:400;">(Optional)</span>',
-        lblEmail:    'Email Address <span style="color:#5C7A77;font-weight:400;">(Optional)</span>',
-        lblPhone:    'Phone Number <span style="color:#5C7A77;font-weight:400;">(Optional)</span>',
+        lblName:     'Full Name <span class="req">*</span>',
+        lblEmail:    'Email Address <span class="req">*</span>',
+        lblPhone:    'Phone Number <span class="req">*</span>',
         lblType:     'Type of Feedback <span class="req">*</span>',
         lblDept:     'Department / Clinic Visited <span class="req">*</span>',
         lblDetails:  'Details / Comments <span class="req">*</span>',
@@ -374,9 +381,9 @@
         langBtn:     'English',
         title:       'صندوق الاقتراحات والآراء',
         sub:         'نقدّر رأيك لتحسين خدماتنا الصحية.',
-        lblName:     'الاسم الكامل <span style="color:#5C7A77;font-weight:400;">(اختياري)</span>',
-        lblEmail:    'البريد الإلكتروني <span style="color:#5C7A77;font-weight:400;">(اختياري)</span>',
-        lblPhone:    'رقم الهاتف <span style="color:#5C7A77;font-weight:400;">(اختياري)</span>',
+        lblName:     'الاسم الكامل <span class="req">*</span>',
+        lblEmail:    'البريد الإلكتروني <span class="req">*</span>',
+        lblPhone:    'رقم الهاتف <span class="req">*</span>',
         lblType:     'نوع الملاحظة <span class="req">*</span>',
         lblDept:     'القسم أو العيادة التي زرتها <span class="req">*</span>',
         lblDetails:  'التفاصيل / التعليقات <span class="req">*</span>',
