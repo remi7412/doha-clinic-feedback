@@ -146,31 +146,43 @@
                 lostLoc: "Where or around what time do you think it went missing? *",
                 submit: "Submit Feedback"
             },
-            ar: {
-                toggleBtn: "English",
-                title: "صندوق آراء وملاحظات المرضى",
-                subtitle: "نحن نقدر رأيك لتطوير خدماتنا الرعاية الصحية المتكاملة.",
-                name: "الاسم الكامل (اختياري)",
-                email: "البريد الإلكتروني (اختياري)",
-                phone: "رقم الهاتف (اختياري)",
-                type: "ما هو نوع الملاحظة التي تود مشاركتها اليوم؟ *",
-                typeSelect: "اختر نوع الملاحظة...",
-                compliment: "ثناء / مدح",
-                comment: "تعليق",
-                complaint: "شكوى",
-                lostItem: "الاستفسار عن مفقودات (الأمن)",
-                dept: "ما هو القسم أو العيادة التي قمت بزيارتها؟ *",
-                deptSelect: "اختر القسم...",
-                details: "يرجى مشاركة تفاصيل تجربتك معنا: *",
-                lostDesc: "يرجى وصف الشيء المفقود (اللون، الماركة، علامات مميزة): *",
-                lostLoc: "أين أو في أي وقت تقريباً فُقد الشيء؟ *",
-                submit: "إرسال الملاحظة"
-            }
-        };
-
-        function toggleLanguage() {
+           function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
             
+            // Adjust form direction (Right-To-Left for Arabic, Left-To-Right for English)
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
+
+            // Apply translations to static labels
+            document.getElementById('langToggle').innerText = translations[currentLang].toggleBtn;
+            document.getElementById('formTitle').innerText = translations[currentLang].title;
+            document.getElementById('formSubtitle').innerText = translations[currentLang].subtitle;
+            document.getElementById('lblLabelName').innerText = translations[currentLang].name;
+            document.getElementById('lblLabelEmail').innerText = translations[currentLang].email;
+            document.getElementById('lblLabelPhone').innerText = translations[currentLang].phone;
+            document.getElementById('lblLabelType').innerText = translations[currentLang].type;
+            document.getElementById('lblLabelDept').innerText = translations[currentLang].dept;
+            document.getElementById('lblLabelDetails').innerText = translations[currentLang].details;
+            document.getElementById('lblLabelLostDesc').innerText = translations[currentLang].lostDesc;
+            document.getElementById('lblLabelLostLoc').innerText = translations[currentLang].lostLoc;
+            document.getElementById('btnSubmit').innerText = translations[currentLang].submit;
+
+            // Fix Dropdown inner text for Type
+            document.getElementById('optTypeSelect').innerText = translations[currentLang].typeSelect;
+            document.getElementById('optCompliment').innerText = translations[currentLang].compliment;
+            document.getElementById('optComment').innerText = translations[currentLang].comment;
+            document.getElementById('optComplaint').innerText = translations[currentLang].complaint;
+            document.getElementById('optLostItem').innerText = translations[currentLang].lostItem;
+
+            // Fix Dropdown inner text for Department
+            document.getElementById('optDeptSelect').innerText = translations[currentLang].deptSelect;
+            document.getElementById('optDeptEr').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Emergency / ER" : "الطوارئ";
+            document.getElementById('optDeptOp').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Outpatient Clinics" : "العيادات الخارجية";
+            document.getElementById('optDeptIp').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Inpatient / Wards" : "الأقسام الداخلية";
+            document.getElementById('optDeptLab').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Laboratory / Radiology" : "المختبر / الأشعة";
+            document.getElementById('optDeptPharma').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Pharmacy" : "الصيدلية";
+            document.getElementById('optDeptAdmin').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Administration / Billing" : "الإدارة / الحسابات";
+        }
             // Adjust form direction (Right-To-Left for Arabic, Left-To-Right for English)
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.documentElement.lang = currentLang;
