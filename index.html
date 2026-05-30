@@ -1,265 +1,517 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doha Clinic Hospital - Feedback System</title>
-    <!-- Tailwind CSS for modern styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Smooth transition when layout flips to Right-to-Left (RTL) for Arabic */
-        body { font-family: sans-serif; transition: all 0.3s ease; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doha Clinic Hospital – Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:    #00756A;
+      --teal-d: #005A51;
+      --teal-l: #E6F4F2;
+      --ink:     #1A2A28;
+      --mist:    #F5F8F7;
+      --border: #C8DAD7;
+      --red:     #C0392B;
+      --white:  #FFFFFF;
+      --radius: 10px;
+      --ease:    cubic-bezier(.4,0,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--mist);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* RTL support */
+    [dir="rtl"] body { font-family: 'DM Sans', 'Segoe UI', Tahoma, sans-serif; }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 4px 40px rgba(0,117,106,.10), 0 1px 4px rgba(0,0,0,.06);
+      overflow: hidden;
+      animation: fadeUp .5s var(--ease) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Cover banner ── */
+    .cover {
+      position: relative;
+      height: 140px;
+      /* Uses cover.jpg background with fallback color gradient */
+      background: linear-gradient(135deg, rgba(0,90,81,0.4) 0%, rgba(0,117,106,0.2) 100%), url('cover.jpg');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+    .cover::after {
+      content:'';
+      position:absolute; inset:0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='28'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+
+    /* ── Logo bubble ── */
+    .logo-wrap {
+      position: absolute;
+      bottom: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 80px;
+      background: var(--white);
+      border-radius: 50%;
+      border: 3px solid var(--teal-l);
+      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      z-index: 10;
+      padding: 6px;
+    }
+    .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* ── Header text ── */
+    .header-text {
+      padding: 56px 24px 20px;
+      text-align: center;
+    }
+    .header-text h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .header-text p {
+      font-size: .85rem;
+      color: #5C7A77;
+      margin-top: .35rem;
+    }
+
+    /* ── Lang toggle ── */
+    .lang-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.25);
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background .2s var(--ease);
+      z-index: 20;
+    }
+    .lang-btn:hover { background: rgba(0, 0, 0, 0.6); }
+    [dir="rtl"] .lang-btn { right: auto; left: 12px; }
+
+    /* ── Form body ── */
+    .form-body { padding: 0 28px 32px; }
+
+    /* ── Field group ── */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 500;
+      color: #3D5A56;
+      margin-bottom: 6px;
+      letter-spacing: .01em;
+    }
+    .field label .req { color: var(--red); margin-inline-start: 2px; }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: .9rem;
+      color: var(--ink);
+      background: var(--white);
+      transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0,117,106,.12);
+    }
+    .field textarea { resize: vertical; min-height: 100px; }
+
+    /* Custom select arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      top: 50%; right: 14px;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--teal);
+      pointer-events: none;
+    }
+    [dir="rtl"] .select-wrap::after { right:auto; left:14px; }
+
+    /* ── Security section ── */
+    .security-section {
+      display: none;
+      background: var(--teal-l);
+      border: 1px solid #B2D5D1;
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 18px;
+      gap: 14px;
+      flex-direction: column;
+    }
+    .security-section.visible { display: flex; animation: fadeUp .3s var(--ease) both; }
+    .security-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--teal-d);
+    }
+    .security-section .field { margin-bottom: 0; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 22px 0;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: var(--teal);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: background .2s var(--ease), transform .1s var(--ease), box-shadow .2s var(--ease);
+      box-shadow: 0 4px 14px rgba(0,117,106,.30);
+    }
+    .btn-submit:hover { background: var(--teal-d); box-shadow: 0 6px 18px rgba(0,117,106,.38); }
+    .btn-submit:active { transform: scale(.98); }
+    .btn-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: .88rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      transition: transform .35s var(--ease), opacity .35s var(--ease);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: var(--teal-d); }
+    .toast.error   { background: var(--red); }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen py-10 px-4">
+<body>
 
-    <div class="max-w-xl mx-auto bg-white rounded-xl shadow-md p-8 relative">
-        
-        <!-- Language Switcher Button -->
-        <button id="langToggle" onclick="toggleLanguage()" class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1 rounded text-sm font-semibold hover:bg-emerald-700 transition">
-            العربية
-        </button>
+  <div class="card">
 
-        <!-- Hospital Header Placeholder -->
-      <div class="max-w-xl mx-auto bg-white rounded-xl shadow-md relative overflow-hidden">
-        
-        <div class="w-full h-40 bg-slate-200 relative">
-            <img src="cover.jpg" alt="Hospital Cover" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent"></div>
-        </div>
-        
-        <div class="p-8 pt-6 relative">
-            
-            <button id="langToggle" onclick="toggleLanguage()" class="absolute -top-36 right-4 bg-emerald-600 text-white px-3 py-1 rounded text-sm font-semibold hover:bg-emerald-700 transition z-10 shadow-md">
-                العربية
-            </button>
-
-            <div class="text-center mb-8 relative">
-                <div class="w-24 h-24 bg-white p-2 rounded-full shadow-md flex items-center justify-center mx-auto -mt-20 relative z-10 border border-slate-100">
-                    <img src="logo.png" alt="Doha Clinic Hospital Logo" class="max-w-full max-h-full object-contain">
-                </div>
-                
-                <h2 id="formTitle" class="text-2xl font-bold text-slate-800 mt-4">Patient Feedback & Suggestion Box</h2>
-                <p id="formSubtitle" class="text-slate-500 text-sm mt-1">We value your opinion to improve our healthcare services.</p>
-            </div>
-
-            <form id="feedbackForm" onsubmit="handleSubmit(event)" class="space-y-5">
-
-        <!-- Form Starts Here -->
-        <form id="feedbackForm" onsubmit="handleSubmit(event)" class="space-y-5">
-            
-            <!-- Patient Name -->
-            <div>
-                <label id="lblLabelName" class="block text-sm font-medium text-slate-700 mb-1">Full Name (Optional)</label>
-                <input type="text" id="patientName" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-            </div>
-
-            <!-- Patient Email -->
-            <div>
-                <label id="lblLabelEmail" class="block text-sm font-medium text-slate-700 mb-1">Email Address (Optional)</label>
-                <input type="email" id="patientEmail" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-            </div>
-
-            <!-- Patient Phone Number -->
-            <div>
-                <label id="lblLabelPhone" class="block text-sm font-medium text-slate-700 mb-1">Phone Number (Optional)</label>
-                <input type="tel" id="patientPhone" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-            </div>
-
-            <!-- Feedback Type (Dropdown) -->
-            <div>
-                <label id="lblLabelType" class="block text-sm font-medium text-slate-700 mb-1">What type of feedback would you like to share today? *</label>
-                <select id="feedbackType" onchange="handleTypeChange()" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-                    <option value="" disabled selected id="optTypeSelect">Select an option...</option>
-                    <option value="Compliment / ثناء" id="optCompliment">Compliment</option>
-                    <option value="Comment / تعليق" id="optComment">Comment</option>
-                    <option value="Complaint / شكوى" id="optComplaint">Complaint</option>
-                    <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات" id="optLostItem">Inquire about a Lost Item (Security)</option>
-                </select>
-            </div>
-
-            <!-- Department Selection (Dropdown) -->
-            <div>
-                <label id="lblLabelDept" class="block text-sm font-medium text-slate-700 mb-1">Which department or clinic did you visit? *</label>
-                <select id="department" required class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-                    <option value="" disabled selected id="optDeptSelect">Select a department...</option>
-                    <option value="Emergency / الطوارئ" id="optDeptEr">Emergency / ER</option>
-                    <option value="Outpatient Clinics / العيادات الخارجية" id="optDeptOp">Outpatient Clinics</option>
-                    <option value="Inpatient / الأقسام الداخلية" id="optDeptIp">Inpatient / Wards</option>
-                    <option value="Laboratory & Radiology / المختبر والأشعة" id="optDeptLab">Laboratory / Radiology</option>
-                    <option value="Pharmacy / الصيدلية" id="optDeptPharma">Pharmacy</option>
-                    <option value="Administration & Billing / الإدارة والحسابات" id="optDeptAdmin">Administration / Billing</option>
-                </select>
-            </div>
-
-            <!-- General Feedback Details -->
-            <div>
-                <label id="lblLabelDetails" class="block text-sm font-medium text-slate-700 mb-1">Please share your thoughts or details about your experience: *</label>
-                <textarea id="feedbackDetails" required rows="4" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"></textarea>
-            </div>
-
-            <!-- CONDITIONAL SECURITY FIELDS (Hidden by default) -->
-            <div id="securitySection" class="hidden border-t border-slate-200 pt-4 space-y-4">
-                <h3 id="secHeader" class="text-md font-bold text-emerald-800">Lost & Found Details / تفاصيل المفقودات</h3>
-                
-                <div>
-                    <label id="lblLabelLostDesc" class="block text-sm font-medium text-slate-700 mb-1">Please describe the lost item (Color, brand, distinguishing marks): *</label>
-                    <textarea id="lostItemDescription" rows="2" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"></textarea>
-                </div>
-
-                <div>
-                    <label id="lblLabelLostLoc" class="block text-sm font-medium text-slate-700 mb-1">Where or around what time do you think it went missing? *</label>
-                    <input type="text" id="estimatedLocationLost" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-                </div>
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" id="btnSubmit" class="w-full bg-emerald-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-emerald-700 shadow transition duration-200">
-                Submit Feedback
-            </button>
-        </form>
+    <div class="cover">
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()">العربية</button>
+      <div class="logo-wrap">
+        <img src="logo.jpg" alt="Doha Clinic Hospital" />
+      </div>
     </div>
 
-    <!-- JavaScript Handling Languages, Conditional Logic, and Backend Pipeline -->
-    <script>
-        let currentLang = 'en';
+    <div class="header-text">
+      <h1 id="ttTitle">Patient Feedback &amp; Suggestion Box</h1>
+      <p id="ttSub">We value your opinion to improve our healthcare services.</p>
+    </div>
 
-        // Dictionary containing both language variants
-        const translations = {
-            en: {
-                toggleBtn: "العربية",
-                title: "Patient Feedback & Suggestion Box",
-                subtitle: "We value your opinion to improve our healthcare services.",
-                name: "Full Name (Optional)",
-                email: "Email Address (Optional)",
-                phone: "Phone Number (Optional)",
-                type: "What type of feedback would you like to share today? *",
-                typeSelect: "Select an option...",
-                compliment: "Compliment",
-                comment: "Comment",
-                complaint: "Complaint",
-                lostItem: "Inquire about a Lost Item (Security)",
-                dept: "Which department or clinic did you visit? *",
-                deptSelect: "Select a department...",
-                details: "Please share your thoughts or details about your experience: *",
-                lostDesc: "Please describe the lost item (Color, brand, distinguishing marks): *",
-                lostLoc: "Where or around what time do you think it went missing? *",
-                submit: "Submit Feedback"
-            },
-           function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'ar' : 'en';
-            
-            // Adjust form direction (Right-To-Left for Arabic, Left-To-Right for English)
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.documentElement.lang = currentLang;
+    <div class="form-body">
+      <form id="feedbackForm" novalidate onsubmit="handleSubmit(event)">
 
-            // Apply translations to static labels
-            document.getElementById('langToggle').innerText = translations[currentLang].toggleBtn;
-            document.getElementById('formTitle').innerText = translations[currentLang].title;
-            document.getElementById('formSubtitle').innerText = translations[currentLang].subtitle;
-            document.getElementById('lblLabelName').innerText = translations[currentLang].name;
-            document.getElementById('lblLabelEmail').innerText = translations[currentLang].email;
-            document.getElementById('lblLabelPhone').innerText = translations[currentLang].phone;
-            document.getElementById('lblLabelType').innerText = translations[currentLang].type;
-            document.getElementById('lblLabelDept').innerText = translations[currentLang].dept;
-            document.getElementById('lblLabelDetails').innerText = translations[currentLang].details;
-            document.getElementById('lblLabelLostDesc').innerText = translations[currentLang].lostDesc;
-            document.getElementById('lblLabelLostLoc').innerText = translations[currentLang].lostLoc;
-            document.getElementById('btnSubmit').innerText = translations[currentLang].submit;
+        <div class="field">
+          <label id="lblName" for="patientName">Full Name <span style="color:#5C7A77;font-weight:400;">(Optional)</span></label>
+          <input type="text" id="patientName" autocomplete="name" />
+        </div>
 
-            // Fix Dropdown inner text for Type
-            document.getElementById('optTypeSelect').innerText = translations[currentLang].typeSelect;
-            document.getElementById('optCompliment').innerText = translations[currentLang].compliment;
-            document.getElementById('optComment').innerText = translations[currentLang].comment;
-            document.getElementById('optComplaint').innerText = translations[currentLang].complaint;
-            document.getElementById('optLostItem').innerText = translations[currentLang].lostItem;
+        <div class="field">
+          <label id="lblEmail" for="patientEmail">Email Address <span style="color:#5C7A77;font-weight:400;">(Optional)</span></label>
+          <input type="email" id="patientEmail" autocomplete="email" />
+        </div>
 
-            // Fix Dropdown inner text for Department
-            document.getElementById('optDeptSelect').innerText = translations[currentLang].deptSelect;
-            document.getElementById('optDeptEr').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Emergency / ER" : "الطوارئ";
-            document.getElementById('optDeptOp').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Outpatient Clinics" : "العيادات الخارجية";
-            document.getElementById('optDeptIp').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Inpatient / Wards" : "الأقسام الداخلية";
-            document.getElementById('optDeptLab').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Laboratory / Radiology" : "المختبر / الأشعة";
-            document.getElementById('optDeptPharma').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Pharmacy" : "الصيدلية";
-            document.getElementById('optDeptAdmin').innerText = translations[currentLang].deptSelect === "Select a department..." ? "Administration / Billing" : "الإدارة / الحسابات";
-        }
-            // Adjust form direction (Right-To-Left for Arabic, Left-To-Right for English)
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.documentElement.lang = currentLang;
+        <div class="field">
+          <label id="lblPhone" for="patientPhone">Phone Number <span style="color:#5C7A77;font-weight:400;">(Optional)</span></label>
+          <input type="tel" id="patientPhone" autocomplete="tel" />
+        </div>
 
-            // Apply translations to elements
-            document.getElementById('langToggle').innerText = translations[currentLang].toggleBtn;
-            document.getElementById('formTitle').innerText = translations[currentLang].title;
-            document.getElementById('formSubtitle').innerText = translations[currentLang].subtitle;
-            document.getElementById('lblLabelName').innerText = translations[currentLang].name;
-            document.getElementById('lblLabelEmail').innerText = translations[currentLang].email;
-            document.getElementById('lblLabelPhone').innerText = translations[currentLang].phone;
-            document.getElementById('lblLabelType').innerText = translations[currentLang].type;
-            document.getElementById('optTypeSelect').innerText = translations[currentLang].typeSelect;
-            document.getElementById('lblLabelDept').innerText = translations[currentLang].dept;
-            document.getElementById('optDeptSelect').innerText = translations[currentLang].deptSelect;
-            document.getElementById('lblLabelDetails').innerText = translations[currentLang].details;
-            document.getElementById('lblLabelLostDesc').innerText = translations[currentLang].lostDesc;
-            document.getElementById('lblLabelLostLoc').innerText = translations[currentLang].lostLoc;
-            document.getElementById('btnSubmit').innerText = translations[currentLang].submit;
-        }
+        <hr class="divider" />
 
-        // Handle displaying the Security section dynamically based on selection
-        function handleTypeChange() {
-            const typeValue = document.getElementById('feedbackType').value;
-            const securitySection = document.getElementById('securitySection');
-            const descInput = document.getElementById('lostItemDescription');
-            const locInput = document.getElementById('estimatedLocationLost');
+        <div class="field">
+          <label id="lblType" for="feedbackType">Type of Feedback <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="feedbackType" required onchange="onTypeChange()">
+              <option value="" disabled selected id="optTypeDefault">Select an option…</option>
+              <option value="Compliment / ثناء"                                         id="optCompliment">Compliment</option>
+              <option value="Comment / تعليق"                                           id="optComment">Comment</option>
+              <option value="Complaint / شكوى"                                           id="optComplaint">Complaint</option>
+              <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات" id="optLost">Inquire about a Lost Item (Security)</option>
+            </select>
+          </div>
+        </div>
 
-            if (typeValue.includes('Inquire about a Lost Item')) {
-                securitySection.classList.remove('hidden');
-                descInput.required = true;
-                locInput.required = true;
-            } else {
-                securitySection.classList.add('hidden');
-                descInput.required = false;
-                locInput.required = false;
-            }
-        }
+        <div class="field">
+          <label id="lblDept" for="department">Department / Clinic Visited <span class="req">*</span></label>
+          <div class="select-wrap">
+            <select id="department" required>
+              <option value="" disabled selected id="optDeptDefault">Select a department…</option>
+              <option value="Emergency / الطوارئ"                       id="optDeptER">Emergency / ER</option>
+              <option value="Outpatient Clinics / العيادات الخارجية"    id="optDeptOP">Outpatient Clinics</option>
+              <option value="Inpatient / الأقسام الداخلية"             id="optDeptIP">Inpatient / Wards</option>
+              <option value="Laboratory & Radiology / المختبر والأشعة" id="optDeptLab">Laboratory / Radiology</option>
+              <option value="Pharmacy / الصيدلية"                      id="optDeptPharma">Pharmacy</option>
+              <option value="Administration & Billing / الإدارة والحسابات" id="optDeptAdmin">Administration / Billing</option>
+            </select>
+          </div>
+        </div>
 
-        // Send submission data to Webhook URL
-        async function handleSubmit(event) {
-            event.preventDefault();
-            
-            // Collect Form Values
-            const formData = {
-                patientName: document.getElementById('patientName').value,
-                patientEmail: document.getElementById('patientEmail').value,
-                patientPhone: document.getElementById('patientPhone').value,
-                type: document.getElementById('feedbackType').value,
-                department: document.getElementById('department').value,
-                feedbackDetails: document.getElementById('feedbackDetails').value,
-                lostItemDescription: document.getElementById('lostItemDescription').value || "",
-                estimatedLocationLost: document.getElementById('estimatedLocationLost').value || ""
-            };
+        <div class="field">
+          <label id="lblDetails" for="feedbackDetails">Details / Comments <span class="req">*</span></label>
+          <textarea id="feedbackDetails" required placeholder="Share your experience…"></textarea>
+        </div>
 
-            // REPLACE THIS URL with your n8n Webhook URL or Airtable Webhook URL
-            const webhookURL = "https://your-webhook-url-here.com";
+        <div class="security-section" id="securitySection">
+          <h3 id="secHeader">🔍 Lost &amp; Found Details</h3>
+          <div class="field">
+            <label id="lblLostDesc" for="lostItemDesc">Describe the lost item (colour, brand, marks) <span class="req">*</span></label>
+            <textarea id="lostItemDesc" rows="2"></textarea>
+          </div>
+          <div class="field">
+            <label id="lblLostLoc" for="lostLocation">Approximate location / time it went missing <span class="req">*</span></label>
+            <input type="text" id="lostLocation" />
+          </div>
+        </div>
 
-            try {
-                const response = await fetch(webhookURL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
+        <button type="submit" class="btn-submit" id="btnSubmit">Submit Feedback</button>
 
-                if (response.ok) {
-                    alert(currentLang === 'en' ? "Thank you! Your feedback has been submitted successfully." : "شكراً لك! تم إرسال ملاحظتك بنجاح.");
-                    document.getElementById('feedbackForm').reset();
-                    handleTypeChange(); // Re-hide security block
-                } else {
-                    throw new Error("Submission failed");
-                }
-            } catch (error) {
-                alert(currentLang === 'en' ? "An error occurred. Please try again." : "حدث خطأ ما. يرجى المحاولة مرة أخرى.");
-                console.error(error);
-            }
-        }
-    </script>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ─── State ─── */
+    let lang = 'en';
+
+    /* ─── Translations ─── */
+    const T = {
+      en: {
+        langBtn:     'العربية',
+        title:       'Patient Feedback &amp; Suggestion Box',
+        sub:         'We value your opinion to improve our healthcare services.',
+        lblName:     'Full Name <span style="color:#5C7A77;font-weight:400;">(Optional)</span>',
+        lblEmail:    'Email Address <span style="color:#5C7A77;font-weight:400;">(Optional)</span>',
+        lblPhone:    'Phone Number <span style="color:#5C7A77;font-weight:400;">(Optional)</span>',
+        lblType:     'Type of Feedback <span class="req">*</span>',
+        lblDept:     'Department / Clinic Visited <span class="req">*</span>',
+        lblDetails:  'Details / Comments <span class="req">*</span>',
+        secHeader:   '🔍 Lost &amp; Found Details',
+        lblLostDesc: 'Describe the lost item (colour, brand, marks) <span class="req">*</span>',
+        lblLostLoc:  'Approximate location / time it went missing <span class="req">*</span>',
+        btnSubmit:   'Submit Feedback',
+        optTypeDefault:  'Select an option…',
+        optCompliment:   'Compliment',
+        optComment:      'Comment',
+        optComplaint:    'Complaint',
+        optLost:         'Inquire about a Lost Item (Security)',
+        optDeptDefault:  'Select a department…',
+        optDeptER:       'Emergency / ER',
+        optDeptOP:       'Outpatient Clinics',
+        optDeptIP:       'Inpatient / Wards',
+        optDeptLab:      'Laboratory / Radiology',
+        optDeptPharma:   'Pharmacy',
+        optDeptAdmin:    'Administration / Billing',
+        detailsPlaceholder: 'Share your experience…',
+        toastOk:    'Thank you! Your feedback has been submitted.',
+        toastErr:   'An error occurred. Please try again.',
+      },
+      ar: {
+        langBtn:     'English',
+        title:       'صندوق الاقتراحات والآراء',
+        sub:         'نقدّر رأيك لتحسين خدماتنا الصحية.',
+        lblName:     'الاسم الكامل <span style="color:#5C7A77;font-weight:400;">(اختياري)</span>',
+        lblEmail:    'البريد الإلكتروني <span style="color:#5C7A77;font-weight:400;">(اختياري)</span>',
+        lblPhone:    'رقم الهاتف <span style="color:#5C7A77;font-weight:400;">(اختياري)</span>',
+        lblType:     'نوع الملاحظة <span class="req">*</span>',
+        lblDept:     'القسم أو العيادة التي زرتها <span class="req">*</span>',
+        lblDetails:  'التفاصيل / التعليقات <span class="req">*</span>',
+        secHeader:   '🔍 تفاصيل المفقودات',
+        lblLostDesc: 'وصف الغرض المفقود (اللون، الماركة، العلامات المميزة) <span class="req">*</span>',
+        lblLostLoc:  'المكان التقريبي / الوقت الذي فُقد فيه <span class="req">*</span>',
+        btnSubmit:   'إرسال الملاحظة',
+        optTypeDefault:  'اختر خياراً…',
+        optCompliment:   'ثناء',
+        optComment:      'تعليق',
+        optComplaint:    'شكوى',
+        optLost:         'الاستفسار عن مفقودات (الأمن)',
+        optDeptDefault:  'اختر القسم…',
+        optDeptER:       'الطوارئ',
+        optDeptOP:       'العيادات الخارجية',
+        optDeptIP:       'الأقسام الداخلية',
+        optDeptLab:      'المختبر / الأشعة',
+        optDeptPharma:   'الصيدلية',
+        optDeptAdmin:    'الإدارة / الحسابات',
+        detailsPlaceholder: 'شاركنا تجربتك…',
+        toastOk:    'شكراً لك! تم إرسال ملاحظتك بنجاح.',
+        toastErr:   'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+      }
+    };
+
+    /* ─── Apply translations ─── */
+    function applyLang(l) {
+      const t = T[l];
+      document.documentElement.lang = l;
+      document.documentElement.dir  = l === 'ar' ? 'rtl' : 'ltr';
+
+      document.getElementById('langBtn').textContent    = t.langBtn;
+      document.getElementById('ttTitle').innerHTML      = t.title;
+      document.getElementById('ttSub').textContent      = t.sub;
+      document.getElementById('lblName').innerHTML      = t.lblName;
+      document.getElementById('lblEmail').innerHTML     = t.lblEmail;
+      document.getElementById('lblPhone').innerHTML     = t.lblPhone;
+      document.getElementById('lblType').innerHTML      = t.lblType;
+      document.getElementById('lblDept').innerHTML      = t.lblDept;
+      document.getElementById('lblDetails').innerHTML   = t.lblDetails;
+      document.getElementById('secHeader').innerHTML    = t.secHeader;
+      document.getElementById('lblLostDesc').innerHTML  = t.lblLostDesc;
+      document.getElementById('lblLostLoc').innerHTML   = t.lblLostLoc;
+      document.getElementById('btnSubmit').textContent  = t.btnSubmit;
+      document.getElementById('feedbackDetails').placeholder = t.detailsPlaceholder;
+
+      // Dropdown options
+      [
+        ['optTypeDefault', 'optTypeDefault'],
+        ['optCompliment',  'optCompliment'],
+        ['optComment',     'optComment'],
+        ['optComplaint',   'optComplaint'],
+        ['optLost',        'optLost'],
+        ['optDeptDefault', 'optDeptDefault'],
+        ['optDeptER',      'optDeptER'],
+        ['optDeptOP',      'optDeptOP'],
+        ['optDeptIP',      'optDeptIP'],
+        ['optDeptLab',     'optDeptLab'],
+        ['optDeptPharma',  'optDeptPharma'],
+        ['optDeptAdmin',   'optDeptAdmin'],
+      ].forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t[key];
+      });
+    }
+
+    function toggleLang() {
+      lang = lang === 'en' ? 'ar' : 'en';
+      applyLang(lang);
+    }
+
+    /* ─── Conditional security section ─── */
+    function onTypeChange() {
+      const val = document.getElementById('feedbackType').value;
+      const sec  = document.getElementById('securitySection');
+      const isLost = val.includes('Lost Item');
+
+      sec.classList.toggle('visible', isLost);
+      document.getElementById('lostItemDesc').required = isLost;
+      document.getElementById('lostLocation').required = isLost;
+    }
+
+    /* ─── Toast helper ─── */
+    function showToast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = `toast ${type} show`;
+      setTimeout(() => { el.classList.remove('show'); }, 3800);
+    }
+
+    /* ─── Submit ─── */
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+
+      const payload = {
+        patientName:          document.getElementById('patientName').value.trim(),
+        patientEmail:         document.getElementById('patientEmail').value.trim(),
+        patientPhone:         document.getElementById('patientPhone').value.trim(),
+        type:                 document.getElementById('feedbackType').value,
+        department:           document.getElementById('department').value,
+        feedbackDetails:      document.getElementById('feedbackDetails').value.trim(),
+        lostItemDescription:  document.getElementById('lostItemDesc').value.trim(),
+        estimatedLocationLost:document.getElementById('lostLocation').value.trim(),
+        submittedAt:          new Date().toISOString(),
+        language:             lang,
+      };
+
+      // ── Replace with your webhook URL ──
+      const WEBHOOK_URL = 'https://your-webhook-url-here.com';
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        showToast(T[lang].toastOk, 'success');
+        form.reset();
+        onTypeChange();
+      } catch (err) {
+        console.error(err);
+        showToast(T[lang].toastErr, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    /* ─── Init ─── */
+    applyLang('en');
+  </script>
 </body>
 </html>
