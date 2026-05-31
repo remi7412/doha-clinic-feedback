@@ -477,18 +477,16 @@
       btn.disabled = true;
 
       const payload = {
-        patientName:          document.getElementById('patientName').value.trim(),
-        patientEmail:         document.getElementById('patientEmail').value.trim(),
-        patientPhone:         document.getElementById('patientPhone').value.trim(),
-        type:                 document.getElementById('feedbackType').value,
-        department:           document.getElementById('department').value,
-        feedbackDetails:      document.getElementById('feedbackDetails').value.trim(),
-        lostItemDescription:  document.getElementById('lostItemDesc').value.trim(),
-        estimatedLocationLost:document.getElementById('lostLocation').value.trim(),
-        submittedAt:          new Date().toISOString(),
-        language:             lang,
+        "Patient Name":          document.getElementById('patientName').value.trim(),
+        "Patient Email":         document.getElementById('patientEmail').value.trim(),
+        "Patient Phone Number":  document.getElementById('patientPhone').value.trim(),
+        "Type":                 document.getElementById('feedbackType').value,
+        "Department":           document.getElementById('department').value,
+        "Feedback Details":      document.getElementById('feedbackDetails').value.trim(),
+        "Lost Item Description":  document.getElementById('lostItemDesc').value.trim(),
+        "Estimated Location Lost":document.getElementById('lostLocation').value.trim(),
+        "Submission Language":    lang
       };
-
       // ── Airtable Webhook Integration ──
       const WEBHOOK_URL = 'https://formspree.io/f/mykvajva';
 
