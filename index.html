@@ -449,14 +449,24 @@
     }
 
     /* ─── Conditional security section ─── */
+        /* ─── Conditional security section ─── */
     function onTypeChange() {
       const val = document.getElementById('feedbackType').value;
-      const sec  = document.getElementById('securitySection');
-      const isLost = val.includes('Lost Item');
+      const sec = document.getElementById('securitySection');
+      const lostDesc = document.getElementById('lostItemDesc');
+      const lostLoc = document.getElementById('lostLocation');
+      
+      // Verified safety hook checks both language parameter variants seamlessly
+      const isLost = val.includes('Lost Item') || val.includes('الاستفسار عن مفقودات');
 
       sec.classList.toggle('visible', isLost);
-      document.getElementById('lostItemDesc').required = isLost;
-      document.getElementById('lostLocation').required = isLost;
+      lostDesc.required = isLost;
+      lostLoc.required = isLost;
+
+      if (!isLost) {
+        lostDesc.value = "";
+        lostLoc.value = "";
+      }
     }
 
     /* ─── Toast helper ─── */
@@ -476,6 +486,7 @@
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
 
+      // Ensured fallback filters insert "N/A" into Airtable cells if non-security option is handled
       const payload = {
         "Patient Name":          document.getElementById('patientName').value.trim(),
         "Patient Email":         document.getElementById('patientEmail').value.trim(),
@@ -483,25 +494,29 @@
         "Type":                 document.getElementById('feedbackType').value,
         "Department":           document.getElementById('department').value,
         "Feedback Details":      document.getElementById('feedbackDetails').value.trim(),
-        "Lost Item Description":  document.getElementById('lostItemDesc').value.trim(),
-        "Estimated Location Lost":document.getElementById('lostLocation').value.trim(),
-        "Submission Language":    lang
+        "Lost Item Description":  document.getElementById('lostItemDesc').value.trim() || "N/A",
+        "Estimated Location Lost":document.getElementById('lostLocation').value.trim() || "N/A",
+        "Submission Language":    lang === 'en' ? 'English' : 'Arabic'
       };
+
       // ── Airtable Webhook Integration ──
       const WEBHOOK_URL = 'https://formspree.io/f/mykvajva';
 
       try {
         const res = await fetch(WEBHOOK_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         showToast(T[lang].toastOk, 'success');
         form.reset();
-        onTypeChange();
+        onTypeChange(); // Closes drawer visually following a successful database post
       } catch (err) {
-        console.error(err);
+        console.error("Pipeline failure caught:", err);
         showToast(T[lang].toastErr, 'error');
       } finally {
         btn.disabled = false;
@@ -512,4 +527,4 @@
     applyLang('en');
   </script>
 </body>
-        </html>
+</html>
