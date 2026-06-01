@@ -55,7 +55,6 @@
     .cover {
       position: relative;
       height: 140px;
-      /* Integrated cover.jpg directly with a smooth color overlay tint */
       background: linear-gradient(135deg, rgba(0,90,81,0.3) 0%, rgba(0,117,106,0.1) 100%), url('cover.jpg');
       background-size: cover;
       background-position: center;
@@ -77,7 +76,7 @@
       background: var(--white);
       border-radius: 50%;
       border: 3px solid var(--teal-l);
-      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+      box-shadow: 0 4px 166px rgba(0,0,0,.12);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
       z-index: 10;
@@ -258,7 +257,7 @@
 
     <div class="header-text">
       <h1 id="ttTitle">Patient Feedback &amp; Suggestion Box</h1>
-      <p  id="ttSub">We value your opinion to improve our healthcare services.</p>
+      <p id="ttSub">We value your opinion to improve our healthcare services.</p>
     </div>
 
     <div class="form-body">
@@ -286,9 +285,9 @@
           <div class="select-wrap">
             <select id="feedbackType" required onchange="onTypeChange()">
               <option value="" disabled selected id="optTypeDefault">Select an option…</option>
-              <option value="Compliment / ثناء"                                         id="optCompliment">Compliment</option>
-              <option value="Comment / تعليق"                                           id="optComment">Comment</option>
-              <option value="Complaint / شكوى"                                           id="optComplaint">Complaint</option>
+              <option value="Compliment / ثناء" id="optCompliment">Compliment</option>
+              <option value="Comment / تعليق" id="optComment">Comment</option>
+              <option value="Complaint / شكوى" id="optComplaint">Complaint</option>
               <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات" id="optLost">Inquire about a Lost Item (Security)</option>
             </select>
           </div>
@@ -299,11 +298,11 @@
           <div class="select-wrap">
             <select id="department" required>
               <option value="" disabled selected id="optDeptDefault">Select a department…</option>
-              <option value="Emergency / الطوارئ"                       id="optDeptER">Emergency / ER</option>
-              <option value="Outpatient Clinics / العيادات الخارجية"    id="optDeptOP">Outpatient Clinics</option>
-              <option value="Inpatient / الأقسام الداخلية"             id="optDeptIP">Inpatient / Wards</option>
+              <option value="Emergency / الطوارئ" id="optDeptER">Emergency / ER</option>
+              <option value="Outpatient Clinics / العيادات الخارجية" id="optDeptOP">Outpatient Clinics</option>
+              <option value="Inpatient / الأقسام الداخلية" id="optDeptIP">Inpatient / Wards</option>
               <option value="Laboratory & Radiology / المختبر والأشعة" id="optDeptLab">Laboratory / Radiology</option>
-              <option value="Pharmacy / الصيدلية"                      id="optDeptPharma">Pharmacy</option>
+              <option value="Pharmacy / الصيدلية" id="optDeptPharma">Pharmacy</option>
               <option value="Administration & Billing / الإدارة والحسابات" id="optDeptAdmin">Administration / Billing</option>
             </select>
           </div>
@@ -338,7 +337,7 @@
     /* ─── State ─── */
     let lang = 'en';
 
-    /* ─── Translations ─── */
+    /* ─── Translations Context Library ─── */
     const T = {
       en: {
         langBtn:     'العربية',
@@ -423,7 +422,7 @@
       document.getElementById('btnSubmit').textContent  = t.btnSubmit;
       document.getElementById('feedbackDetails').placeholder = t.detailsPlaceholder;
 
-      // Dropdown options
+      // Dropdown options loop rendering cleanly without breaking
       [
         ['optTypeDefault', 'optTypeDefault'],
         ['optCompliment',  'optCompliment'],
@@ -449,14 +448,12 @@
     }
 
     /* ─── Conditional security section ─── */
-        /* ─── Conditional security section ─── */
     function onTypeChange() {
       const val = document.getElementById('feedbackType').value;
       const sec = document.getElementById('securitySection');
       const lostDesc = document.getElementById('lostItemDesc');
       const lostLoc = document.getElementById('lostLocation');
       
-      // Verified safety hook checks both language parameter variants seamlessly
       const isLost = val.includes('Lost Item') || val.includes('الاستفسار عن مفقودات');
 
       sec.classList.toggle('visible', isLost);
@@ -477,7 +474,7 @@
       setTimeout(() => { el.classList.remove('show'); }, 3800);
     }
 
-    /* ─── Submit ─── */
+    /* ─── Submit Controller ─── */
     async function handleSubmit(e) {
       e.preventDefault();
       const form = e.target;
@@ -486,7 +483,6 @@
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
 
-      // Ensured fallback filters insert "N/A" into Airtable cells if non-security option is handled
       const payload = {
         "Patient Name":          document.getElementById('patientName').value.trim(),
         "Patient Email":         document.getElementById('patientEmail').value.trim(),
@@ -499,7 +495,6 @@
         "Submission Language":    lang === 'en' ? 'English' : 'Arabic'
       };
 
-      // ── Airtable Webhook Integration ──
       const WEBHOOK_URL = 'https://formspree.io/f/mykvajva';
 
       try {
@@ -514,17 +509,18 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         showToast(T[lang].toastOk, 'success');
         form.reset();
-        onTypeChange(); // Closes drawer visually following a successful database post
+        onTypeChange(); 
       } catch (err) {
-        console.error("Pipeline failure caught:", err);
+        console.error("Pipeline post failure:", err);
         showToast(T[lang].toastErr, 'error');
       } finally {
         btn.disabled = false;
       }
     }
 
-    /* ─── Init ─── */
+    /* ─── Init Defaults ─── */
     applyLang('en');
   </script>
 </body>
-</html>
+  </html>
+  
