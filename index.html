@@ -33,7 +33,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start; /* Fixed vertical compression layout bug */
+      justify-content: flex-start;
       padding: 0;
       overflow-x: hidden;
     }
@@ -55,7 +55,7 @@
     }
 
     .marquee-container.footer-marquee {
-      background: #0f2724; /* Matches the dark bottom accent bar on your physical feedback card */
+      background: #0f2724; 
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
     }
 
@@ -85,7 +85,6 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* Seamless right-to-left marquee scroll animation reversal for Arabic */
     [dir="rtl"] .marquee-content {
       animation: scrollMarqueeRTL 25s linear infinite;
     }
@@ -95,7 +94,6 @@
       100% { transform: translateX(0); }
     }
 
-    /* Main content wrapper with comfortable structural margins */
     .main-content {
       flex: 1;
       display: flex;
@@ -481,7 +479,7 @@
       ar: {
         langBtn:     'English',
         title:       'صندوق الاقتراحات والآراء للمرضى',
-        sub:         'نقدّر رأيك وملاحظاتك لمساعدتنا في تحسين جودة خدماتنا الرعاية الصحية.',
+        sub:         'نقدّر رأيك وملاحظاتك لمساعدتنا في تحسين جودة خدمات الرعاية الصحية.',
         lblName:     'الاسم الكامل <span class="req">*</span>',
         lblEmail:    'البريد الإلكتروني <span class="req">*</span>',
         lblPhone:    'رقم الهاتف <span class="req">*</span>',
@@ -543,4 +541,8 @@
       document.documentElement.lang = l;
       document.documentElement.dir  = l === 'ar' ? 'rtl' : 'ltr';
 
-      document.getElementById('langBtn').textContent    
+      document.getElementById('langBtn').textContent    = t.langBtn;
+      document.getElementById('ttTitle').innerHTML      = t.title;
+      document.getElementById('ttSub').textContent      = t.sub;
+      document.getElementById('lblName').innerHTML      = t.lblName;
+      document.getElementById('lblEmail').innerH
