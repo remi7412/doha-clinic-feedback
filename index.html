@@ -39,14 +39,10 @@
       align-items: flex-start;
       justify-content: center;
       padding: 2.5rem 1rem 5rem;
-
-      /* Subtle grain texture */
       background-image:
         radial-gradient(ellipse 80% 60% at 20% -10%, rgba(0,117,106,.06) 0%, transparent 60%),
         radial-gradient(ellipse 60% 50% at 90% 110%, rgba(0,117,106,.04) 0%, transparent 55%);
     }
-
-    [dir="rtl"] body { font-family: 'DM Sans', 'Segoe UI', Tahoma, sans-serif; }
 
     /* ── Card ── */
     .card {
@@ -75,7 +71,6 @@
       overflow: hidden;
     }
 
-    /* Decorative pattern overlay */
     .cover::before {
       content: '';
       position: absolute; inset: 0;
@@ -114,27 +109,6 @@
       padding: 7px;
     }
     .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
-
-    /* ── Lang Toggle ── */
-    .lang-btn {
-      position: absolute;
-      top: 14px; right: 14px;
-      background: rgba(0,0,0,.38);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.22);
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: .78rem;
-      font-weight: 500;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-      letter-spacing: .03em;
-      transition: background .2s var(--ease);
-      z-index: 20;
-    }
-    .lang-btn:hover { background: rgba(0,0,0,.55); }
-    [dir="rtl"] .lang-btn { right: auto; left: 14px; }
 
     /* ── Header Text ── */
     .header-text {
@@ -228,9 +202,7 @@
       width: 16px; height: 16px;
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300756A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
     }
-    [dir="rtl"] .select-wrap::after { right: auto; left: 15px; }
     .field select { padding-right: 40px; }
-    [dir="rtl"] .field select { padding-right: 15px; padding-left: 40px; }
 
     /* ── Row layout for 2-col fields ── */
     .field-row {
@@ -321,7 +293,6 @@
       overflow: hidden;
     }
 
-    /* Shimmer on hover */
     .btn-submit::before {
       content: '';
       position: absolute;
@@ -372,7 +343,6 @@
     .toast.error   { background: var(--red); color: #fff; }
     .toast.error::before { content: '✕'; }
 
-    /* ── Mobile polish ── */
     @media (max-width: 600px) {
       body { padding: 0 0 4rem; }
       .card { border-radius: 0; border-left: none; border-right: none; box-shadow: none; }
@@ -385,101 +355,93 @@
 
   <div class="card">
 
-    <!-- Cover -->
     <div class="cover">
-      <button class="lang-btn" id="langBtn" onclick="toggleLang()">العربية</button>
       <div class="logo-wrap">
         <img src="logo.jpg" alt="Doha Clinic Hospital" onerror="this.style.display='none'" />
       </div>
     </div>
 
-    <!-- Header -->
     <div class="header-text">
-      <h1 id="ttTitle">Patient Feedback &amp; Suggestion Box</h1>
-      <p id="ttSub">We value your opinion to improve our healthcare services.</p>
+      <h1>Patient Feedback &amp; Suggestion Box</h1>
+      <p>We value your opinion to improve our healthcare services.</p>
     </div>
 
-    <!-- Form Body -->
     <div class="form-body">
       <form id="feedbackForm" novalidate onsubmit="handleSubmit(event)">
 
-        <!-- Contact Fields -->
         <div class="field">
-          <label id="lblName" for="patientName">Full Name <span class="req">*</span></label>
+          <label for="patientName">Full Name <span class="req">*</span></label>
           <input type="text" id="patientName" autocomplete="name" required />
         </div>
 
         <div class="field-row">
           <div class="field">
-            <label id="lblEmail" for="patientEmail">Email Address <span class="req">*</span></label>
+            <label for="patientEmail">Email Address <span class="req">*</span></label>
             <input type="email" id="patientEmail" autocomplete="email" required />
           </div>
           <div class="field">
-            <label id="lblPhone" for="patientPhone">Phone Number <span class="req">*</span></label>
+            <label for="patientPhone">Phone Number <span class="req">*</span></label>
             <input type="tel" id="patientPhone" autocomplete="tel" required />
           </div>
         </div>
 
-        <!-- Section Divider -->
         <div style="position:relative; margin:26px 0;">
           <hr class="divider" style="margin:0;" />
-          <span class="divider-label" id="divLabel">Feedback Details</span>
+          <span class="divider-label">Feedback Details</span>
         </div>
 
-        <!-- Select Fields Dropdowns -->
         <div class="field-row">
           <div class="field">
-            <label id="lblType" for="feedbackType">Feedback Type <span class="req">*</span></label>
+            <label for="feedbackType">Feedback Type <span class="req">*</span></label>
             <div class="select-wrap">
               <select id="feedbackType" required onchange="onTypeChange()">
-                <option value="" disabled selected id="optTypeDefault">Select…</option>
-                <option value="Compliment / ثناء" id="optCompliment">Compliment</option>
-                <option value="Comment / تعليق" id="optComment">Comment</option>
-                <option value="Complaint / شكوى" id="optComplaint">Complaint</option>
-                <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات" id="optLost">Lost Item (Security)</option>
+                <option value="" disabled selected>Select…</option>
+                <option value="Compliment / ثناء">Compliment</option>
+                <option value="Comment / تعليق">Comment</option>
+                <option value="Complaint / شكوى">Complaint</option>
+                <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات">Lost Item (Security)</option>
               </select>
             </div>
           </div>
 
           <div class="field">
-            <label id="lblDept" for="department">Department <span class="req">*</span></label>
+            <label for="department">Department <span class="req">*</span></label>
             <div class="select-wrap">
               <select id="department" required>
-                <option value="" disabled selected id="optDeptDefault">Select…</option>
-                <option value="Emergency / الطوارئ" id="optDeptER">Emergency / ER</option>
-                <option value="Outpatient Clinics / العيادات الخارجية" id="optDeptOP">Outpatient Clinics</option>
-                <option value="Inpatient / الأقسام الداخلية" id="optDeptIP">Inpatient / Wards</option>
-                <option value="Laboratory & Radiology / المختبر والأشعة" id="optDeptLab">Laboratory / Radiology</option>
-                <option value="Pharmacy / الصيدلية" id="optDeptPharma">Pharmacy</option>
-                <option value="Administration & Billing / الإدارة والحسابات" id="optDeptAdmin">Administration / Billing</option>
+                <option value="" disabled selected>Select…</option>
+                <option value="Emergency / الطوارئ">Emergency / ER</option>
+                <option value="Outpatient Clinics / العيادات الخارجية">Outpatient Clinics</option>
+                <option value="Inpatient / الأقسام الداخلية">Inpatient / Wards</option>
+                <option value="Laboratory & Radiology / المختبر والأشعة">Laboratory / Radiology</option>
+                <option value="Pharmacy / الصيدلية">Pharmacy</option>
+                <option value="Administration & Billing / الإدارة والحسابات">Administration / Billing</option>
               </select>
             </div>
           </div>
         </div>
 
         <div class="field">
-          <label id="lblDetails" for="feedbackDetails">Details / Comments <span class="req">*</span></label>
+          <label for="feedbackDetails">Details / Comments <span class="req">*</span></label>
           <textarea id="feedbackDetails" required placeholder="Share your experience…"></textarea>
         </div>
 
-        <!-- Dynamic Security Conditional Block -->
         <div class="security-section" id="securitySection">
           <div class="security-section-header">
-            <h3 id="secHeader">🔍 Lost &amp; Found Details</h3>
+            <h3>🔍 Lost &amp; Found Details</h3>
           </div>
           <div class="field">
-            <label id="lblLostDesc" for="lostItemDesc">Item description (colour, brand, distinguishing marks) <span class="req">*</span></label>
+            <label for="lostItemDesc">Item description (colour, brand, distinguishing marks) <span class="req">*</span></label>
             <textarea id="lostItemDesc" rows="2"></textarea>
           </div>
           <div class="field">
-            <label id="lblLostLoc" for="lostLocation">Approximate location / time lost <span class="req">*</span></label>
+            <label for="lostLocation">Approximate location / time lost <span class="req">*</span></label>
             <input type="text" id="lostLocation" />
           </div>
         </div>
 
         <button type="submit" class="btn-submit" id="btnSubmit">Submit Feedback</button>
 
-        <p class="form-footer"><span id="footerNote">Your information is kept confidential and used solely to improve our services.</span></p>
+        <p class="form-footer"><span>Your information is kept confidential and used solely to improve our services.</span></p>
 
       </form>
     </div>
@@ -488,87 +450,89 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    /* ─── State Management ─── */
-    let lang = 'en';
-
-    /* ─── Translation Context Library ─── */
-    const T = {
-      en: {
-        langBtn:     'العربية',
-        title:       'Patient Feedback &amp; Suggestion Box',
-        sub:         'We value your opinion to improve our healthcare services.',
-        lblName:     'Full Name <span class="req">*</span>',
-        lblEmail:    'Email Address <span class="req">*</span>',
-        lblPhone:    'Phone Number <span class="req">*</span>',
-        lblType:     'Feedback Type <span class="req">*</span>',
-        lblDept:     'Department <span class="req">*</span>',
-        lblDetails:  'Details / Comments <span class="req">*</span>',
-        secHeader:   '🔍 Lost &amp; Found Details',
-        lblLostDesc: 'Item description (colour, brand, distinguishing marks) <span class="req">*</span>',
-        lblLostLoc:  'Approximate location / time lost <span class="req">*</span>',
-        btnSubmit:   'Submit Feedback',
-        divLabel:    'Feedback Details',
-        footerNote:  'Your information is kept confidential and used solely to improve our services.',
-        optTypeDefault:  'Select…',
-        optCompliment:   'Compliment',
-        optComment:      'Comment',
-        optComplaint:    'Complaint',
-        optLost:         'Lost Item (Security)',
-        optDeptDefault:  'Select…',
-        optDeptER:       'Emergency / ER',
-        optDeptOP:       'Outpatient Clinics',
-        optDeptIP:       'Inpatient / Wards',
-        optDeptLab:      'Laboratory / Radiology',
-        optDeptPharma:   'Pharmacy',
-        optDeptAdmin:    'Administration / Billing',
-        detailsPlaceholder: 'Share your experience…',
-        toastOk:  'Thank you! Your feedback has been submitted.',
-        toastErr: 'An error occurred. Please try again.',
-      },
-      ar: {
-        langBtn:     'English',
-        title:       'صندوق الاقتراحات والآراء',
-        sub:         'نقدّر رأيك لتحسين خدماتنا الصحية.',
-        lblName:     'الاسم الكامل <span class="req">*</span>',
-        lblEmail:    'البريد الإلكتروني <span class="req">*</span>',
-        lblPhone:    'رقم الهاتف <span class="req">*</span>',
-        lblType:     'نوع الملاحظة <span class="req">*</span>',
-        lblDept:     'القسم أو العيادة <span class="req">*</span>',
-        lblDetails:  'التفاصيل / التعليقات <span class="req">*</span>',
-        secHeader:   '🔍 تفاصيل المفقودات',
-        lblLostDesc: 'وصف الغرض المفقود (اللون، الماركة، العلامات المميزة) <span class="req">*</span>',
-        lblLostLoc:  'المكان التقريبي / الوقت الذي فُقد فيه <span class="req">*</span>',
-        btnSubmit:   'إرسال الملاحظة',
-        divLabel:    'تفاصيل الملاحظة',
-        footerNote:  'تُحفظ معلوماتك بسرية تامة وتُستخدم فقط لتحسين خدماتنا.',
-        optTypeDefault:  'اختر…',
-        optCompliment:   'ثناء',
-        optComment:      'تعليق',
-        optComplaint:    'شكوى',
-        optLost:         'الاستفسار عن مفقودات (الأمن)',
-        optDeptDefault:  'اختر…',
-        optDeptER:       'الطوارئ',
-        optDeptOP:       'العيادات الخارجية',
-        optDeptIP:       'الأقسام الداخلية',
-        optDeptLab:      'المختبر / الأشعة',
-        optDeptPharma:   'الصيدلية',
-        optDeptAdmin:    'الإدارة / الحسابات',
-        detailsPlaceholder: 'شاركنا تجربتك…',
-        toastOk:  'شكراً لك! تم إرسال ملاحظتك بنجاح.',
-        toastErr: 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
+    /* ─── Real-Time Field Rules & Validation Engine ─── */
+    function onTypeChange() {
+      const typeSelect = document.getElementById('feedbackType');
+      const securitySection = document.getElementById('securitySection');
+      const lostDesc = document.getElementById('lostItemDesc');
+      const lostLoc = document.getElementById('lostLocation');
+      
+      // Keep background values matching your exact Airtable pipeline strings
+      if (typeSelect.value.includes('Lost Item')) {
+        securitySection.classList.add('visible');
+        lostDesc.required = true;
+        lostLoc.required = true;
+      } else {
+        securitySection.classList.remove('visible');
+        lostDesc.required = false;
+        lostLoc.required = false;
+        lostDesc.value = "";
+        lostLoc.value = "";
       }
-    };
+    }
 
-    /* ─── Render Strings Execution ─── */
-    function applyLang(l) {
-      const t = T[l];
-      document.documentElement.lang = l;
-      document.documentElement.dir  = l === 'ar' ? 'rtl' : 'ltr';
+    /* ─── Toast Pop-up System ─── */
+    function showToast(message, variant = 'success') {
+      const toast = document.getElementById('toast');
+      toast.className = `toast ${variant} show`;
+      toast.textContent = message;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4500);
+    }
 
-      document.getElementById('langBtn').textContent       = t.langBtn;
-      document.getElementById('ttTitle').innerHTML         = t.title;
-      document.getElementById('ttSub').textContent         = t.sub;
+    /* ─── Form Submission Controller ─── */
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const form = document.getElementById('feedbackForm');
+      const submitBtn = document.getElementById('btnSubmit');
 
-      // Labels Layout
-      document.getElementById('lblName').innerHTML         = t.lblName;
-      document.getElementById('lblEmail').innerH
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      submitBtn.disabled = true;
+
+      // Assembling payload with data tags that match your Airtable configuration perfectly
+      const payload = {
+        "Patient Name": document.getElementById('patientName').value,
+        "Patient Email": document.getElementById('patientEmail').value,
+        "Patient Phone Number": document.getElementById('patientPhone').value,
+        "Type": document.getElementById('feedbackType').value,
+        "Department": document.getElementById('department').value,
+        "Feedback Details": document.getElementById('feedbackDetails').value,
+        "Lost Item Description": document.getElementById('lostItemDesc').value || "N/A",
+        "Estimated Location Lost": document.getElementById('lostLocation').value || "N/A",
+        "Submission Language": "English"
+      };
+
+      try {
+        const response = await fetch('https://formspree.io/f/mykvajva', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          showToast('Thank you! Your feedback has been submitted.', 'success');
+          form.reset();
+          onTypeChange(); 
+        } else {
+          showToast('An error occurred. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error("System pipeline error identified:", error);
+        showToast('An error occurred. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+  </html>
+  
