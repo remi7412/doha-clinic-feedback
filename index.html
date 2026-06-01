@@ -38,9 +38,7 @@
       overflow-x: hidden;
     }
 
-    [dir="rtl"] body { font-family: 'DM Sans', 'Segoe UI', Tahoma, sans-serif; }
-
-    /* ── Smooth CSS Infinite Marquee Track Styles ── */
+    /* ── Smooth CSS Infinite Marquee Ribbon Tracks ── */
     .marquee-container {
       width: 100vw;
       background: var(--teal);
@@ -55,7 +53,7 @@
     }
 
     .marquee-container.footer-marquee {
-      background: #0f2724; /* Dark elegant background accent matching the physical card footer band */
+      background: #0f2724; 
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
     }
 
@@ -66,7 +64,6 @@
       animation: scrollMarquee 25s linear infinite;
     }
 
-    /* Duplicate track layout structure for uninterrupted loops */
     .marquee-content span {
       font-size: 0.85rem;
       font-weight: 500;
@@ -84,16 +81,6 @@
     @keyframes scrollMarquee {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
-    }
-
-    /* Reverse direction layout support rule for RTL scripts */
-    [dir="rtl"] .marquee-content {
-      animation: scrollMarqueeRTL 25s linear infinite;
-    }
-
-    @keyframes scrollMarqueeRTL {
-      0% { transform: translateX(-50%); }
-      100% { transform: translateX(0); }
     }
 
     /* Main body spacing wrapper */
@@ -171,24 +158,6 @@
       margin-top: .4rem;
     }
 
-    .lang-btn {
-      position: absolute;
-      top: 12px; right: 12px;
-      background: rgba(0, 0, 0, 0.4);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.25);
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: .8rem;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-      transition: background .2s var(--ease);
-      z-index: 20;
-    }
-    .lang-btn:hover { background: rgba(0, 0, 0, 0.55); }
-    [dir="rtl"] .lang-btn { right: auto; left: 12px; }
-
     .form-body { padding: 24px 32px 36px; }
     .field { margin-bottom: 18px; }
     .field label {
@@ -242,9 +211,7 @@
       width: 14px; height: 14px;
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300756A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
     }
-    [dir="rtl"] .select-wrap::after { right: auto; left: 14px; }
     .field select { padding-right: 36px; }
-    [dir="rtl"] .field select { padding-right: 14px; padding-left: 36px; }
 
     .security-section {
       display: none;
@@ -293,6 +260,28 @@
     .btn-submit:active { transform: scale(.99); }
     .btn-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; }
 
+    /* ── Status Banner Toast System ── */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.16);
+      transition: transform .35s var(--ease), opacity .35s var(--ease);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: var(--teal-d); }
+    .toast.error   { background: var(--red); }
+
     @media (max-width: 600px) {
       .main-content { padding: 1rem 0 2rem; }
       .card { border-radius: 0; border: none; box-shadow: none; }
@@ -302,11 +291,9 @@
 </head>
 <body>
 
-  <!-- Header Marquee: Matches Physical Top Card Content Header -->
+  <!-- Top Ribbon Marquee -->
   <div class="marquee-container" id="headerMarquee">
-    <div class="marquee-content" id="headerMarqueeContent">
-      <!-- The inner elements will automatically clone and append on start to fill infinite track -->
-    </div>
+    <div class="marquee-content" id="headerMarqueeContent"></div>
   </div>
 
   <!-- Form Body Core Wrap -->
@@ -314,34 +301,33 @@
     <div class="card">
 
       <div class="cover">
-        <button class="lang-btn" id="langBtn" onclick="toggleLang()">العربية</button>
         <div class="logo-wrap">
           <img src="logo.jpg" alt="Doha Clinic Hospital" onerror="this.style.display='none'" />
         </div>
       </div>
 
       <div class="header-text">
-        <h1 id="ttTitle">Patient Feedback &amp; Suggestion Box</h1>
-        <p id="ttSub">We value your opinion to improve our healthcare services.</p>
+        <h1>Patient Feedback &amp; Suggestion Box</h1>
+        <p>We value your opinion to improve our healthcare services.</p>
       </div>
 
       <div class="form-body">
         <form id="feedbackForm" novalidate onsubmit="handleSubmit(event)">
 
           <div class="field">
-            <label id="lblName" for="patientName">Full Name <span class="req">*</span></label>
-            <input type="text" id="patientName" autocomplete="name" required />
+            <label for="patientName">Full Name <span class="req">*</span></label>
+            <input type="text" id="patientName" placeholder="Enter your full name" required />
           </div>
 
           <div class="field-row">
             <div class="field">
-              <label id="lblEmail" for="patientEmail">Email Address <span class="req">*</span></label>
-              <input type="email" id="patientEmail" autocomplete="email" required />
+              <label for="patientEmail">Email Address <span class="req">*</span></label>
+              <input type="email" id="patientEmail" placeholder="Enter your email" required />
             </div>
 
             <div class="field">
-              <label id="lblPhone" for="patientPhone">Phone Number <span class="req">*</span></label>
-              <input type="tel" id="patientPhone" autocomplete="tel" required />
+              <label for="patientPhone">Phone Number <span class="req">*</span></label>
+              <input type="tel" id="patientPhone" placeholder="Enter your phone number" required />
             </div>
           </div>
 
@@ -349,48 +335,48 @@
 
           <div class="field-row">
             <div class="field">
-              <label id="lblType" for="feedbackType">Type of Feedback <span class="req">*</span></label>
+              <label for="feedbackType">Type of Feedback <span class="req">*</span></label>
               <div class="select-wrap">
                 <select id="feedbackType" required onchange="onTypeChange()">
-                  <option value="" disabled selected id="optTypeDefault">Select an option…</option>
-                  <option value="Compliment / ثناء" id="optCompliment">Compliment</option>
-                  <option value="Comment / تعليق" id="optComment">Comment</option>
-                  <option value="Complaint / شكوى" id="optComplaint">Complaint</option>
-                  <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات" id="optLost">Inquire about a Lost Item (Security)</option>
+                  <option value="" disabled selected>Select an option…</option>
+                  <option value="Compliment / ثناء">Compliment</option>
+                  <option value="Comment / تعليق">Comment</option>
+                  <option value="Complaint / شكوى">Complaint</option>
+                  <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات">Inquire about a Lost Item (Security)</option>
                 </select>
               </div>
             </div>
 
             <div class="field">
-              <label id="lblDept" for="department">Department / Clinic Visited <span class="req">*</span></label>
+              <label for="department">Department / Clinic Visited <span class="req">*</span></label>
               <div class="select-wrap">
                 <select id="department" required>
-                  <option value="" disabled selected id="optDeptDefault">Select a department…</option>
-                  <option value="Emergency / الطوارئ" id="optDeptER">Emergency / ER</option>
-                  <option value="Outpatient Clinics / العيادات الخارجية" id="optDeptOP">Outpatient Clinics</option>
-                  <option value="Inpatient / الأقسام الداخلية" id="optDeptIP">Inpatient / Wards</option>
-                  <option value="Laboratory & Radiology / المختبر والأشعة" id="optDeptLab">Laboratory / Radiology</option>
-                  <option value="Pharmacy / الصيدلية" id="optDeptPharma">Pharmacy</option>
-                  <option value="Administration & Billing / الإدارة والحسابات" id="optDeptAdmin">Administration / Billing</option>
+                  <option value="" disabled selected>Select a department…</option>
+                  <option value="Emergency / الطوارئ">Emergency / ER</option>
+                  <option value="Outpatient Clinics / العيادات الخارجية">Outpatient Clinics</option>
+                  <option value="Inpatient / الأقسام الداخلية">Inpatient / Wards</option>
+                  <option value="Laboratory & Radiology / المختبر والأشعة">Laboratory / Radiology</option>
+                  <option value="Pharmacy / الصيدلية">Pharmacy</option>
+                  <option value="Administration & Billing / الإدارة والحسابات">Administration / Billing</option>
                 </select>
               </div>
             </div>
           </div>
 
           <div class="field">
-            <label id="lblDetails" for="feedbackDetails">Details / Comments <span class="req">*</span></label>
+            <label for="feedbackDetails">Details / Comments <span class="req">*</span></label>
             <textarea id="feedbackDetails" required placeholder="Share your experience…"></textarea>
           </div>
 
           <div class="security-section" id="securitySection">
-            <h3 id="secHeader">🔍 Lost &amp; Found Details</h3>
+            <h3>🔍 Lost &amp; Found Details</h3>
             <div class="field">
-              <label id="lblLostDesc" for="lostItemDesc">Describe the lost item (colour, brand, marks) <span class="req">*</span></label>
-              <textarea id="lostItemDesc" rows="2"></textarea>
+              <label for="lostItemDesc">Describe the lost item (colour, brand, marks) <span class="req">*</span></label>
+              <textarea id="lostItemDesc" rows="2" placeholder="Enter item description"></textarea>
             </div>
             <div class="field">
-              <label id="lblLostLoc" for="lostLocation">Approximate location / time it went missing <span class="req">*</span></label>
-              <input type="text" id="lostLocation" />
+              <label for="lostLocation">Approximate location / time it went missing <span class="req">*</span></label>
+              <input type="text" id="lostLocation" placeholder="Where or when was it lost?" />
             </div>
           </div>
 
@@ -401,137 +387,114 @@
     </div>
   </div>
 
-  <!-- Footer Marquee: Matches Physical Bottom Card Address Footer -->
+  <!-- Bottom Ribbon Marquee -->
   <div class="marquee-container footer-marquee" id="footerMarquee">
-    <div class="marquee-content" id="footerMarqueeContent">
-      <!-- Generated dynamically inside JavaScript context loop below -->
-    </div>
+    <div class="marquee-content" id="footerMarqueeContent"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    /* ─── State Configuration ─── */
-    let lang = 'en';
+    /* ─── Static Marquee String Arrays ─── */
+    const headerItems = [
+      "MOUWASAT CO. Healthcare Services",
+      "DOHA CLINIC HOSPITAL",
+      "PATIENT FEEDBACK CARD",
+      "KINDLY GIVE YOUR FEEDBACK REGARDING YOUR VISIT"
+    ];
 
-    /* ─── Translation and Marquee Context Data Pack Library ─── */
-    const T = {
-      en: {
-        langBtn:     'العربية',
-        title:       'Patient Feedback &amp; Suggestion Box',
-        sub:         'We value your opinion to improve our healthcare services.',
-        lblName:     'Full Name <span class="req">*</span>',
-        lblEmail:    'Email Address <span class="req">*</span>',
-        lblPhone:    'Phone Number <span class="req">*</span>',
-        lblType:     'Type of Feedback <span class="req">*</span>',
-        lblDept:     'Department / Clinic Visited <span class="req">*</span>',
-        lblDetails:  'Details / Comments <span class="req">*</span>',
-        secHeader:   '🔍 Lost &amp; Found Details',
-        lblLostDesc: 'Describe the lost item (colour, brand, marks) <span class="req">*</span>',
-        lblLostLoc:  'Approximate location / time it went missing <span class="req">*</span>',
-        btnSubmit:   'Submit Feedback',
-        optTypeDefault:  'Select an option…',
-        optCompliment:   'Compliment',
-        optComment:      'Comment',
-        optComplaint:    'Complaint',
-        optLost:         'Inquire about a Lost Item (Security)',
-        optDeptDefault:  'Select a department…',
-        optDeptER:       'Emergency / ER',
-        optDeptOP:       'Outpatient Clinics',
-        optDeptIP:       'Inpatient / Wards',
-        optDeptLab:      'Laboratory / Radiology',
-        optDeptPharma:   'Pharmacy',
-        optDeptAdmin:    'Administration / Billing',
-        detailsPlaceholder: 'Share your experience…',
-        toastOk:    'Thank you! Your feedback has been submitted.',
-        toastErr:   'An error occurred. Please try again.',
-        
-        // Header card text assets extracted from card image layout
-        headerItems: [
-          "MOUWASAT CO. Healthcare Services",
-          "DOHA CLINIC HOSPITAL",
-          "PATIENT FEEDBACK CARD",
-          "KINDLY GIVE YOUR FEEDBACK REGARDING YOUR VISIT"
-        ],
-        // Footer card address metrics extracted from card image layout
-        footerItems: [
-          "New Al Mirqab Street, Fereej Al Nasr, P.O.Box: 9958 Doha - Qatar",
-          "Tel: +974 4438 4333",
-          "Email: info@dchqatar.com",
-          "Website: www.dohaclinichospital.com",
-          "Socials: @dohachospital"
-        ]
-      },
-      ar: {
-        langBtn:     'English',
-        title:       'صندوق الاقتراحات والآراء',
-        sub:         'نقدّر رأيك لتحسين خدماتنا الصحية.',
-        lblName:     'الاسم الكامل <span class="req">*</span>',
-        lblEmail:    'البريد الإلكتروني <span class="req">*</span>',
-        lblPhone:    'رقم الهاتف <span class="req">*</span>',
-        lblType:     'نوع الملاحظة <span class="req">*</span>',
-        lblDept:     'القسم أو العيادة التي زرتها <span class="req">*</span>',
-        lblDetails:  'التفاصيل / التعليقات <span class="req">*</span>',
-        secHeader:   '🔍 تفاصيل المفقودات',
-        lblLostDesc: 'وصف الغرض المفقود (اللون، الماركة، العلامات المميزة) <span class="req">*</span>',
-        lblLostLoc:  'المكان التقريبي / الوقت الذي فُقد فيه <span class="req">*</span>',
-        btnSubmit:   'إرسال الملاحظة',
-        optTypeDefault:  'اختر خياراً…',
-        optCompliment:   'ثناء',
-        optComment:      'تعليق',
-        optComplaint:    'شكوى',
-        optLost:         'الاستفسار عن مفقودات (الأمن)',
-        optDeptDefault:  'اختر القسم…',
-        optDeptER:       'الطوارئ',
-        optDeptOP:       'العيادات الخارجية',
-        optDeptIP:       'الأقسام الداخلية',
-        optDeptLab:      'المختبر / الأشعة',
-        optDeptPharma:   'الصيدلية',
-        optDeptAdmin:    'الإدارة / الحسابات',
-        detailsPlaceholder: 'شاركنا تجربتك…',
-        toastOk:    'شكراً لك! تم إرسال ملاحظتك بنجاح.',
-        toastErr:   'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
-        
-        headerItems: [
-          "شركة المواساة للخدمات الطبية",
-          "مستشفى عيادة الدوحة",
-          "بطاقة ملاحظات المرضى",
-          "يرجى تقديم ملاحظاتك المتعلقة بزيارتك"
-        ],
-        footerItems: [
-          "شارع المرقاب الجديد، فريج النصر، ص.ب: 9958 الدوحة - قطر",
-          "هاتف: 4333 4438 974+",
-          "البريد الإلكتروني: info@dchqatar.com",
-          "الموقع الإلكتروني: www.dohaclinichospital.com",
-          "حساباتنا: dohachospital@"
-        ]
-      }
-    };
+    const footerItems = [
+      "New Al Mirqab Street, Fereej Al Nasr, P.O.Box: 9958 Doha - Qatar",
+      "Tel: +974 4438 4333",
+      "Email: info@dchqatar.com",
+      "Website: www.dohaclinichospital.com",
+      "Socials: @dohachospital"
+    ];
 
-    /* ─── Build / Render Marquee Track DOM Arrays ─── */
-    function renderMarquees(l) {
-      const t = T[l];
+    /* ─── Render Infinite Marquee Tracks ─── */
+    function initMarquees() {
       const headerBox = document.getElementById('headerMarqueeContent');
       const footerBox = document.getElementById('footerMarqueeContent');
       
-      // Construct raw string formats
-      let headerStr = t.headerItems.map(item => `<span>${item}</span>`).join('<span class="separator">★</span>');
-      let footerStr = t.footerItems.map(item => `<span>${item}</span>`).join('<span class="separator">◆</span>');
+      let headerStr = headerItems.map(item => `<span>${item}</span>`).join('<span class="separator">★</span>');
+      let footerStr = footerItems.map(item => `<span>${item}</span>`).join('<span class="separator">◆</span>');
       
-      // Duplicate string block inside container tracks to ensure seamless infinite styling splits
       headerBox.innerHTML = `${headerStr} <span class="separator">★</span> ${headerStr}`;
       footerBox.innerHTML = `${footerStr} <span class="separator">◆</span> ${footerStr}`;
     }
 
-    /* ─── Apply Interface Changes ─── */
-    function applyLang(l) {
-      const t = T[l];
-      document.documentElement.lang = l;
-      document.documentElement.dir  = l === 'ar' ? 'rtl' : 'ltr';
+    /* ─── Conditional Security Section Triage ─── */
+    function onTypeChange() {
+      const val = document.getElementById('feedbackType').value;
+      const sec = document.getElementById('securitySection');
+      const lostDesc = document.getElementById('lostItemDesc');
+      const lostLoc = document.getElementById('lostLocation');
+      
+      const isLost = val.includes('Lost Item');
 
-      document.getElementById('langBtn').textContent    = t.langBtn;
-      document.getElementById('ttTitle').innerHTML      = t.title;
-      document.getElementById('ttSub').textContent      = t.sub;
-      document.getElementById('lblName').innerHTML      = t.lblName;
-      document.getElementById('lblEmail').innerHTML     = t.lblEmail;
-    
+      sec.classList.toggle('visible', isLost);
+      lostDesc.required = isLost;
+      lostLoc.required = isLost;
+
+      if (!isLost) {
+        lostDesc.value = "";
+        lostLoc.value = "";
+      }
+    }
+
+    /* ─── Toast System Notifications ─── */
+    function showToast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = `toast ${type} show`;
+      setTimeout(() => { el.classList.remove('show'); }, 3800);
+    }
+
+    /* ─── Form Submission Handling ─── */
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+
+      const payload = {
+        "Patient Name":          document.getElementById('patientName').value.trim(),
+        "Patient Email":         document.getElementById('patientEmail').value.trim(),
+        "Patient Phone Number":  document.getElementById('patientPhone').value.trim(),
+        "Type":                 document.getElementById('feedbackType').value,
+        "Department":           document.getElementById('department').value,
+        "Feedback Details":      document.getElementById('feedbackDetails').value.trim(),
+        "Lost Item Description":  document.getElementById('lostItemDesc').value.trim() || "N/A",
+        "Estimated Location Lost":document.getElementById('lostLocation').value.trim() || "N/A",
+        "Submission Language":    "English"
+      };
+
+      try {
+        const res = await fetch('https://formspree.io/f/mykvajva', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        showToast('Thank you! Your feedback has been submitted.', 'success');
+        form.reset();
+        onTypeChange(); 
+      } catch (err) {
+        console.error("Pipeline post failure:", err);
+        showToast('An error occurred. Please try again.', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    /* ─── Initialize ─── */
+    initMarquees();
+  </script>
+</body>
+  </html>
+  
