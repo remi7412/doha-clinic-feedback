@@ -522,12 +522,25 @@
       }
     };
 
+    /* ─── Safety Update Helper Functions ─── */
+    function safeTxt(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function safeHtml(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    }
+
     /* ─── Build / Infinite Marquee Loops Track Elements ─── */
     function renderMarquees(l) {
       const t = T[l];
       const headerBox = document.getElementById('headerMarqueeContent');
       const footerBox = document.getElementById('footerMarqueeContent');
       
+      if (!headerBox || !footerBox) return;
+
       let headerStr = t.headerItems.map(item => `<span>${item}</span>`).join('<span class="separator">★</span>');
       let footerStr = t.footerItems.map(item => `<span>${item}</span>`).join('<span class="separator">◆</span>');
       
@@ -541,8 +554,129 @@
       document.documentElement.lang = l;
       document.documentElement.dir  = l === 'ar' ? 'rtl' : 'ltr';
 
-      document.getElementById('langBtn').textContent    = t.langBtn;
-      document.getElementById('ttTitle').innerHTML      = t.title;
-      document.getElementById('ttSub').textContent      = t.sub;
-      document.getElementById('lblName').innerHTML      = t.lblName;
-      document.getElementById('lblEmail').innerH
+      safeTxt('langBtn', t.langBtn);
+      safeHtml('ttTitle', t.title);
+      safeTxt('ttSub', t.sub);
+      safeHtml('lblName', t.lblName);
+      safeHtml('lblEmail', t.lblEmail);
+      safeHtml('lblPhone', t.lblPhone);
+      safeHtml('lblType', t.lblType);
+      safeHtml('lblDept', t.lblDept);
+      safeHtml('lblDetails', t.lblDetails);
+      safeHtml('secHeader', t.secHeader);
+      safeHtml('lblLostDesc', t.lblLostDesc);
+      safeHtml('lblLostLoc', t.lblLostLoc);
+      safeTxt('btnSubmit', t.btnSubmit);
+
+      const textEl = document.getElementById('feedbackDetails');
+      if (textEl) textEl.placeholder = t.detailsPlaceholder;
+
+      [
+        ['optTypeDefault', 'optTypeDefault'],
+        ['optCompliment',  'optCompliment'],
+        ['optComment',     'optComment'],
+        ['optComplaint',   'optComplaint'],
+        ['optLost',        'optLost'],
+        ['optDeptDefault', 'optDeptDefault'],
+        ['optDeptER',      'optDeptER'],
+        ['optDeptOP',      'optDeptOP'],
+        ['optDeptIP',      'optDeptIP'],
+        ['optDeptLab',     'optDeptLab'],
+        ['optDeptPharma',  'optDeptPharma'],
+        ['optDeptAdmin',   'optDeptAdmin'],
+      ].forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t[key];
+      });
+
+      renderMarquees(l);
+    }
+
+    function toggleLang() {
+      lang = lang === 'en' ? 'ar' : 'en';
+      applyLang(lang);
+    }
+
+    /* ─── Dynamic Field Validation Engine ─── */
+    function onTypeChange() {
+      const typeSelect = document.getElementById('feedbackType');
+      const sec = document.getElementById('securitySection');
+      const lostDesc = document.getElementById('lostItemDesc');
+      const lostLoc = document.getElementById('lostLocation');
+      
+      if (!typeSelect || !sec || !lostDesc || !lostLoc) return;
+
+      const val = typeSelect.value;
+      const isLost = val.includes('Lost Item') || val.includes('الاستفسار عن مفقودات');
+
+      sec.classList.toggle('visible', isLost);
+      lostDesc.required = isLost;
+      lostLoc.required = isLost;
+
+      if (!isLost) {
+        lostDesc.value = "";
+        lostLoc.value = "";
+      }
+    }
+
+    /* ─── Status UI Toast System ─── */
+    function showToast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      if (el) {
+        el.textContent = msg;
+        el.className = `toast ${type} show`;
+        setTimeout(() => { el.classList.remove('show'); }, 3800);
+      }
+    }
+
+    /* ─── Form Submission Protocol ─── */
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      const btn = document.getElementById('btnSubmit');
+      if (btn) btn.disabled = true;
+
+      const payload = {
+        "Patient Name":          document.getElementById('patientName')?.value.trim() || "",
+        "Patient Email":         document.getElementById('patientEmail')?.value.trim() || "",
+        "Patient Phone Number":  document.getElementById('patientPhone')?.value.trim() || "",
+        "Type":                 document.getElementById('feedbackType')?.value || "",
+        "Department":           document.getElementById('department')?.value || "",
+        "Feedback Details":      document.getElementById('feedbackDetails')?.value.trim() || "",
+        "Lost Item Description":  document.getElementById('lostItemDesc')?.value.trim() || "N/A",
+        "Estimated Location Lost":document.getElementById('lostLocation')?.value.trim() || "N/A",
+        "Submission Language":    lang === 'en' ? 'English' : 'Arabic'
+      };
+
+      const WEBHOOK_URL = 'https://formspree.io/f/mykvajva';
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        showToast(T[lang].toastOk, 'success');
+        form.reset();
+        onTypeChange(); 
+      } catch (err) {
+        console.error("Pipeline post failure identification:", err);
+        showToast(T[lang].toastErr, 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    /* ─── Initializer Hook ─── */
+    window.addEventListener('DOMContentLoaded', () => {
+      applyLang('en');
+    });
+  </script>
+</body>
+</html>
