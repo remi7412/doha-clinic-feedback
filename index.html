@@ -33,7 +33,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start; /* Prevents layout compression on mobile */
       padding: 0;
       overflow-x: hidden;
     }
@@ -90,7 +90,8 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      padding: 3rem 1rem;
+      padding: 2rem 1rem 4rem; /* Gives breathing space below top marquee */
+      box-sizing: border-box;
     }
 
     /* ── Card UI Form Panel ── */
@@ -301,6 +302,7 @@
     <div class="card">
 
       <div class="cover">
+        <!-- Removed Arabic toggle button from layout completely -->
         <div class="logo-wrap">
           <img src="logo.jpg" alt="Doha Clinic Hospital" onerror="this.style.display='none'" />
         </div>
@@ -339,10 +341,10 @@
               <div class="select-wrap">
                 <select id="feedbackType" required onchange="onTypeChange()">
                   <option value="" disabled selected>Select an option…</option>
-                  <option value="Compliment / ثناء">Compliment</option>
-                  <option value="Comment / تعليق">Comment</option>
-                  <option value="Complaint / شكوى">Complaint</option>
-                  <option value="Inquire about a Lost Item (Security) / الاستفسار عن مفقودات">Inquire about a Lost Item (Security)</option>
+                  <option value="Compliment">Compliment</option>
+                  <option value="Comment">Comment</option>
+                  <option value="Complaint">Complaint</option>
+                  <option value="Inquire about a Lost Item (Security)">Inquire about a Lost Item (Security)</option>
                 </select>
               </div>
             </div>
@@ -352,12 +354,12 @@
               <div class="select-wrap">
                 <select id="department" required>
                   <option value="" disabled selected>Select a department…</option>
-                  <option value="Emergency / الطوارئ">Emergency / ER</option>
-                  <option value="Outpatient Clinics / العيادات الخارجية">Outpatient Clinics</option>
-                  <option value="Inpatient / الأقسام الداخلية">Inpatient / Wards</option>
-                  <option value="Laboratory & Radiology / المختبر والأشعة">Laboratory / Radiology</option>
-                  <option value="Pharmacy / الصيدلية">Pharmacy</option>
-                  <option value="Administration & Billing / الإدارة والحسابات">Administration / Billing</option>
+                  <option value="Emergency / ER">Emergency / ER</option>
+                  <option value="Outpatient Clinics">Outpatient Clinics</option>
+                  <option value="Inpatient / Wards">Inpatient / Wards</option>
+                  <option value="Laboratory / Radiology">Laboratory / Radiology</option>
+                  <option value="Pharmacy">Pharmacy</option>
+                  <option value="Administration / Billing">Administration / Billing</option>
                 </select>
               </div>
             </div>
@@ -430,7 +432,7 @@
       const lostDesc = document.getElementById('lostItemDesc');
       const lostLoc = document.getElementById('lostLocation');
       
-      const isLost = val.includes('Lost Item');
+      const isLost = val.includes('Lost Item') || val.includes('Inquire about a Lost Item');
 
       sec.classList.toggle('visible', isLost);
       lostDesc.required = isLost;
@@ -496,5 +498,4 @@
     initMarquees();
   </script>
 </body>
-  </html>
-  
+</html>
